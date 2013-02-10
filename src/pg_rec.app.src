@@ -1,0 +1,21 @@
+{application, pg_rec,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { pg_rec_app, [
+    {pg_connections, 1},
+    {db, [
+      {host, "localhost"},
+      {port, 5432},
+      {user, "postgres"},
+      {password, "danniill"},
+      {database, "baton"}
+    ]}
+  ]}},
+  {env, []}
+ ]}.
