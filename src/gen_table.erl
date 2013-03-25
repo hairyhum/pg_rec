@@ -23,7 +23,6 @@ find({_Module, _Record} = RecordSpec, Pid) ->
 -spec find_f(record_spec(), fun()) -> tuple() | not_found.
 find_f({_Module, _Record} = RecordSpec, Equery) -> 
   Data = sql_data(RecordSpec),
-  
   Filters = lists:map(fun({K,V}) -> {K, '=', V} end, Data),
   case findMany_f(RecordSpec, Filters, Equery) of 
     [Rec | _] -> Rec;
@@ -66,7 +65,8 @@ save_f({Module, Record} = RecordSpec, Equery) when is_function(Equery)  ->
 
 sql_data({Module, Record}) -> 
   lists:filter(
-      fun({_,undefined}) -> false; 
+      fun({_,undefined}) -> false;
+        ({_, required}) -> false; 
         (_) -> true end, 
       Module:to_sql_data(Record)).
 

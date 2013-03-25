@@ -9,7 +9,7 @@
 select(Table, Search, Equery) ->
   {Filters, Params} = make_quoted_filters(Search),
   Where = case Filters of
-    [] -> true;
+    [] -> {true, '=', true};
     Filters -> {'and', Filters}
   end,
   Query = {select, '*', {from, Table}, {where, Where}},
@@ -59,6 +59,7 @@ make_quoted_filters(Search) ->
       Res = {{Key, Qual, placeholder(Index)}, Val},
       {Res, Index + 1}
     end, 
+    1,
     Search),
   lists:unzip(Filters).
 
@@ -79,6 +80,6 @@ row_to_plist(Columns, Row) when is_tuple(Row) ->
 
 -spec rows_to_plists([#column{}], [tuple()]) -> [plist()].
 rows_to_plists(Columns, Rows) when is_list(Rows)->
-  list:map(
+  lists:map(
     fun(Row) -> row_to_plist(Columns, Row) end,
     Rows).
