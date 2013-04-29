@@ -5,17 +5,18 @@
 
 -export ([select/3, insert/3, exist/3, updateById/4]).
 
--spec select(atom(), [filter()], fun()) -> [plist()].
-select(Table, Search, Equery) ->
+select(Table, Search, Equery) -> select(Table, Search, all, Equery).
+
+-spec select(atom(), [filter()], all | integer(),  fun()) -> [plist()].
+select(Table, Search, Limit, Equery) ->
   {Filters, Params} = make_quoted_filters(Search),
   Where = case Filters of
     [] -> {true, '=', true};
     Filters -> {'and', Filters}
   end,
-  Query = {select, '*', {from, Table}, {where, Where}},
+  Query = {select, '*', {from, Table}, {where, Where}, {limit, Limit}},
   {ok, Columns, Rows} = Equery(Query, Params),
   rows_to_plists(Columns, Rows).
-
 
 -spec insert(atom(), plist(), fun()) -> {ok, integer()}. 
 insert(Table, Data, Equery) ->

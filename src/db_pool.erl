@@ -4,7 +4,7 @@
 -export([get_pool/2]).
 
 %% API
--export([safe_equery/1, safe_equery/2, bin_equery/1, bin_equery/2]).
+-export([safe_equery/1, safe_equery/2, bin_equery/1, bin_equery/2, with_transaction/1]).
 
 -define (POOL_NAME, pg_pool).
 
