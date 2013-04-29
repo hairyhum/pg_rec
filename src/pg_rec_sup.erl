@@ -24,10 +24,8 @@ start_link(Args) ->
 %% ===================================================================
 
 init(Args) ->
-  % Connections = proplists:get_value(pg_connections, Args),
   DbParams =  proplists:get_value(db, Args),
-  PgConnection =
-    {pg_connection, {pg_connection, start_link, [DbParams]},
-      permanent, 5000, worker, [pg_connection]},
-  {ok, { {one_for_one, 5, 10}, [PgConnection]} }.
+  PoolParams = proplists:get_value(db_pool, Args), 
+  PgPool = db_pool:get_pool(PoolParams, DbParams), 
+  {ok, { {one_for_one, 5, 10}, [PgPool]} }.
 

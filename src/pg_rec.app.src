@@ -8,7 +8,10 @@
                   stdlib
                  ]},
   {mod, { pg_rec_app, [
-    {pg_connections, 1},
+    {db_pool, [
+      {size, 10},
+      {max_overflow, 20}
+      ]},
     {db, [
       {host, "localhost"},
       {port, 5432},

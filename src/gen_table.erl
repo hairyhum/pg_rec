@@ -72,7 +72,7 @@ sql_data({Module, Record}) ->
 
 -spec equery(pid()) -> fun((tuple(), list()) -> pg_connection:equery_result()).
 equery(Pid) ->
-  fun(Q,P) -> pg_connection:safe_equery(Q,P,Pid) end.
+  fun(Q,P) -> db_pool:safe_equery(Q,P,Pid) end.
 -spec equery() -> fun().
 equery() -> 
-  fun pg_connection:safe_equery/2.
+  fun db_pool:safe_equery/2.
