@@ -28,6 +28,7 @@ bin_equery(Pid, Query) -> bin_equery(Pid, Query, []).
 -spec safe_equery(pid(), tuple(), list()) -> equery_result().
 safe_equery(Pid, Query, Params) when is_pid(Pid), is_tuple(Query), is_list(Params) ->
   BinQuery = sqerl:sql(Query, true),
+  io:format("~p~n", [BinQuery]), 
   pgsql:equery(Pid, BinQuery, Params).
 
 -spec bin_equery(pid(), binary(), list()) -> equery_result().

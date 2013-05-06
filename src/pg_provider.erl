@@ -17,7 +17,7 @@ save(undefined, {Table, Id, Data, Index}) ->
       save(Pid, {Table, Id, Data, Index})
     end);
 save(Pid, {Table, Id, Data, Index}) ->
-  FullData = Data ++ Index,
+  FullData = remove_duplicates(Data ++ Index),
   Equery = equery(Pid),
   case pg_rec_sql:exist(Id, Table, equery(Pid)) of 
     true -> pg_rec_sql:updateById(Table, Id, FullData, Equery);
@@ -63,3 +63,6 @@ delete_many(Pid, {Table, Index}) ->
 
 prepare_search(Index) ->
   [{Key, '=', Val} || {Key, Val} <- Index].
+
+remove_duplicates(Proplist) ->
+  [{Key, proplists:get_value(Key, Proplist)} || Key <- proplists:get_keys(Proplist)].
