@@ -16,7 +16,7 @@ get_pool(SizeArgs, WorkerArgs) ->
 call_in_pool(Args) ->
   poolboy:transaction(?POOL_NAME, 
     fun(Worker) ->
-      get_server:call(Worker, Args)
+      gen_server:call(Worker, Args)
     end). 
 
 -spec safe_equery(tuple()) -> pg_connection:equery_result().

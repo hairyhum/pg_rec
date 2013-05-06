@@ -41,6 +41,7 @@ find({Module, Record} = _RecordSpec, Pid) ->
   Index = Module:get_index(Record),
   Result = Provider:find(Pid, {Table, Id, Index}),
   case Result of 
+    {ok, []} -> not_found;
     {ok, Data} -> Module:from_data(Record, Data);
     Err -> Err
   end.

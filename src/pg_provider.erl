@@ -27,14 +27,16 @@ save(Pid, {Table, Id, Data, Index}) ->
 
 find(Pid, {Table, Id, Index}) ->
   Equery = equery(Pid),
+  Search = prepare_search(Index),
   case Id of 
-    undefined -> pg_rec_sql:select(Table, Index, 1, Equery);
-    Id ->  pg_rec_sql:select(Pid, Table, [Id], 1, Equery)
+    {_, undefined} -> pg_rec_sql:select(Table, Search, 1, Equery);
+    {IdKey, IdVal} ->  pg_rec_sql:select(Table, [{IdKey, '=', IdVal}], 1, Equery)
   end.
 
 find_many(Pid, {Table, Index}) ->
   Equery = equery(Pid),
-  pg_rec_sql:select(Table, Index, Equery).
+  Search = prepare_search(Index),
+  pg_rec_sql:select(Table, Search, Equery).
 
 delete(undefined, {Table, Id}) ->
   db_pool:with_transaction(
@@ -55,5 +57,9 @@ delete_many(undefined, {Table, Index}) ->
     end);
 delete_many(Pid, {Table, Index}) ->
   Equery = equery(Pid),
-  pg_rec_sql:delete_by_index(Table, Index, Equery).
+  Search = prepare_search(Index),
+  pg_rec_sql:delete_by_index(Table, Search, Equery).
 
+
+prepare_search(Index) ->
+  [{Key, '=', Val} || {Key, Val} <- Index].

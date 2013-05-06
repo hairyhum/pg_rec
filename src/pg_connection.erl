@@ -7,7 +7,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 %% API
--export([safe_equery/3, bin_equery/3]).
+-export([safe_equery/3, bin_equery/3, safe_equery/2, bin_equery/2]).
 
 -type equery_result() :: 
   {error, #error{}} | 
@@ -51,15 +51,15 @@ init(Args) ->
       {stop, "DB-server is shutdown with error: ~p~n", [Error]}
   end.
 
-handle_call({safe_equery, {Query, Params}}, _, #state{ pid = Pid }) ->
-  Res = safe_equery(Query,Params,Pid),
-  {reply, Res, Pid};
-handle_call({bin_equery, {Query, Params}}, _, #state{ pid = Pid }) ->
-  Res = bin_equery(Query,Params,Pid),
-  {reply, Res, Pid};
-handle_call({with_transaction, Fun}, _, #state{ pid = Pid }) ->
+handle_call({safe_equery, {Query, Params}}, _, #state{ pid = Pid } = State) ->
+  Res = safe_equery(Pid, Query,Params),
+  {reply, Res, State};
+handle_call({bin_equery, {Query, Params}}, _, #state{ pid = Pid } = State) ->
+  Res = bin_equery(Pid, Query,Params),
+  {reply, Res, State};
+handle_call({with_transaction, Fun}, _, #state{ pid = Pid } = State) ->
   Res = pgsql:with_transaction(Pid, Fun),
-  {reply, Res, Pid}. 
+  {reply, Res, State}. 
 
 handle_cast(_, State) -> {noreply, State}.
 handle_info(_, State) -> {noreply, State}.
